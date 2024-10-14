@@ -1,17 +1,36 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { mockedData } from '../../data/mockedData'
 
 @Component({
   selector: 'app-content',
   standalone: true,
-  imports: [],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './content.component.html',
   styleUrl: './content.component.css'
 })
-export class ContentComponent {
+export class ContentComponent implements OnInit {
   @Input()
-  imageCover: string = 'https://www.searchenginejournal.com/wp-content/uploads/2019/04/the-seo-guide-to-angular.png'
+  imageCover: string = ""
   @Input()
-  contentTitle: string = 'Nova Notícia'
+  contentTitle: string = ""
   @Input()
-  contentDescription: string = 'Bla bla bla bla bla'
+  contentDescription: string = ""
+  private id: string | null = "0"
+  constructor(private route: ActivatedRoute) {
+  }
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(value =>
+      this.id = value.get("id"))
+    this.setComponentValues(this.id)
+  }
+  setComponentValues(id: string | null) {
+    const data = mockedData.filter(article => article.id.toString() == id)[0]
+    if(id){
+    this.imageCover = data.imageCover
+    this.contentDescription = data.description
+    this.contentTitle = data.title
+    }
+
+  }
 }
